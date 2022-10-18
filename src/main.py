@@ -1,8 +1,12 @@
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+
 from datetime import date
+from time import sleep
 import pandas as pd
 from pathlib import Path
+import traceback
 
 import videos
 import subs
@@ -11,14 +15,15 @@ import superchat
 
 PATH="chromedriver.exe"
 driver = webdriver.Chrome(PATH)
+sleep(3)
 
 def get_channel_name(url):
     global driver
 
     driver.get(url)
-    channel_name = driver.find_element_by_class_name("name").text
+    channel_name = driver.find_element(By.CLASS_NAME, "name").text
     channel_name = channel_name.replace("/", "").replace(".", " ")
-    Path(channel_name).mkdir(exist_ok=True)
+    Path("output", channel_name).mkdir(exist_ok=True)
     return channel_name
 
 def main():
@@ -52,8 +57,5 @@ def main():
     
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(e)
+    main()
     driver.quit()

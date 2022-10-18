@@ -1,23 +1,27 @@
 
-from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver import Chrome
+from selenium.webdriver.remote.webelement import WebElement
+
 from datetime import date
 import pandas as pd
 
-def get_superchat_info(driver: webdriver, channel_url, channel_name):
+def get_superchat_info(driver: Chrome, channel_url, channel_name):
 
     url = "{}/superchat".format(channel_url)
     driver.get(url)
 
-    subs_table = driver.find_element_by_class_name("sheet--rounded")
-    rows = subs_table.find_elements_by_tag_name("tr")
-    columns = [col.text for col in rows[0].find_elements_by_tag_name("th")]
+
+    subs_table: WebElement = driver.find_element(By.CLASS_NAME, "sheet--rounded")
+    rows: list[WebElement] = subs_table.find_elements(By.TAG_NAME, "tr")
+    columns = [col.text for col in rows[0].find_elements(By.TAG_NAME, "th")]
     entries = []
     for row in rows[1:]:
         entries.append([
-            row.find_element_by_class_name("date").text,
-            row.find_element_by_class_name("count").text,
-            row.find_element_by_class_name("avg").text,
-            row.find_element_by_class_name("amount").text
+            row.find_element(By.CLASS_NAME, "date").text,
+            row.find_element(By.CLASS_NAME, "count").text,
+            row.find_element(By.CLASS_NAME, "avg").text,
+            row.find_element(By.CLASS_NAME, "amount").text
         ])
     
     # print(columns, entries)
